@@ -1,0 +1,24 @@
+
+
+
+docs
+task_description
+tmp
+
+.python-version
+__pycache__
+
+
+.venv
+
+
+# C/CUDA build artifacts
+*.o
+julia_cuda/src/juliaset_cpu
+julia_cuda/src/juliaset_gpu
+
+
+# Benchmark and image outputs
+*.csv
+*.ppm
+
