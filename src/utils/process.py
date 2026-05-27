@@ -2,6 +2,7 @@
 
 import shlex
 import subprocess
+import sys
 from pathlib import Path
 from typing import List
 
@@ -27,6 +28,15 @@ def run_command(command: List[str], working_directory: Path,
     if dry_run:
         return 0
 
-    # check=True turns failed commands into Python exceptions.
-    subprocess.run(command, cwd=working_directory, check=True)
+    try:
+        # check=True turns failed commands into Python exceptions.
+        subprocess.run(command, cwd=working_directory, check=True)
+    except FileNotFoundError:
+        # This usually means the binary was not built yet.
+        missing_program = command[0]
+        print(f"Error: could not find {missing_program} in "
+              f"{working_directory}", file=sys.stderr)
+        print("Build the binary first, then run the command again.",
+              file=sys.stderr)
+        return 127
     return 0
