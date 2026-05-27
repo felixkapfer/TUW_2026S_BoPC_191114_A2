@@ -83,6 +83,26 @@ def main() -> int:
         return run_command(build_cpu_command(), cuda_sources_directory,
                            parsed_arguments.dry_run)
 
+    # A clean checkout has sources only, so build missing binaries on demand.
+    if (parsed_arguments.command == "run-gpu"
+            and not (cuda_sources_directory / "juliaset_gpu").exists()):
+        print("juliaset_gpu not found; building GPU binary first.")
+        build_exit_code = run_command(build_gpu_command(),
+                                      cuda_sources_directory,
+                                      parsed_arguments.dry_run)
+        if build_exit_code != 0:
+            return build_exit_code
+
+    # The same rule applies to the CPU reference binary.
+    if (parsed_arguments.command == "run-cpu"
+            and not (cuda_sources_directory / "juliaset_cpu").exists()):
+        print("juliaset_cpu not found; building CPU binary first.")
+        build_exit_code = run_command(build_cpu_command(),
+                                      cuda_sources_directory,
+                                      parsed_arguments.dry_run)
+        if build_exit_code != 0:
+            return build_exit_code
+
     # Only GPU runs accept an optional CUDA block size.
     cuda_block_size = None
     if (parsed_arguments.command == "run-gpu"

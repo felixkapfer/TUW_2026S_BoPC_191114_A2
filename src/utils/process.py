@@ -39,4 +39,9 @@ def run_command(command: List[str], working_directory: Path,
         print("Build the binary first, then run the command again.",
               file=sys.stderr)
         return 127
+    except subprocess.CalledProcessError as error:
+        # The command ran, but make or the executable returned an error.
+        print(f"Error: command failed with exit code {error.returncode}.",
+              file=sys.stderr)
+        return error.returncode
     return 0
