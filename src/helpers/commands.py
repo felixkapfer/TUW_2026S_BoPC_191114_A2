@@ -1,16 +1,17 @@
 """Command builders for building and running the CUDA code."""
 
 from pathlib import Path
+from typing import List, Optional, Tuple
 
 
-def build_gpu_command() -> list[str]:
+def build_gpu_command() -> List[str]:
     """Return the command that builds the CUDA binary."""
     # -B rebuilds object files and avoids mixing CPU and GPU objects.
     # Makefile.gpu uses nvcc and produces juliaset_gpu.
     return ["make", "-B", "-f", "Makefile.gpu"]
 
 
-def build_cpu_command() -> list[str]:
+def build_cpu_command() -> List[str]:
     """Return the command that builds the CPU reference binary."""
     # The CPU binary is useful for comparing timings against the GPU.
     # The plain Makefile uses g++ and produces juliaset_cpu.
@@ -18,8 +19,8 @@ def build_cpu_command() -> list[str]:
 
 
 def run_gpu_command(image_size: int, repetition_count: int,
-                    cuda_block_size: tuple[int, int] | None,
-                    output_file: Path | None) -> list[str]:
+                    cuda_block_size: Optional[Tuple[int, int]],
+                    output_file: Optional[Path]) -> List[str]:
     """Return a juliaset_gpu command for one square image size."""
     # The assignment uses square images for all required measurements.
     # -r expects width and height, so pass the same value twice.
@@ -47,7 +48,7 @@ def run_gpu_command(image_size: int, repetition_count: int,
 
 
 def run_cpu_command(image_size: int, repetition_count: int,
-                    output_file: Path | None) -> list[str]:
+                    output_file: Optional[Path]) -> List[str]:
     """Return a juliaset_cpu command for one square image size."""
     # CPU and GPU runs use the same resolution and repetition arguments.
     cpu_command = [

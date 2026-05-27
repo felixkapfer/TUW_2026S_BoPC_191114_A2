@@ -3,9 +3,10 @@
 import shlex
 import subprocess
 from pathlib import Path
+from typing import List
 
 
-def printable_command(command: list[str], working_directory: Path) -> str:
+def printable_command(command: List[str], working_directory: Path) -> str:
     """Return a shell-like command string for display."""
     # shlex.quote protects spaces and special characters in paths.
     quoted_command_parts = " ".join(shlex.quote(part) for part in command)
@@ -15,7 +16,7 @@ def printable_command(command: list[str], working_directory: Path) -> str:
     return f"(cd {quoted_working_directory} && {quoted_command_parts})"
 
 
-def run_command(command: list[str], working_directory: Path,
+def run_command(command: List[str], working_directory: Path,
                 dry_run: bool) -> int:
     """Print a command, then optionally execute it."""
     # Always print first so users can see exactly what would happen.
