@@ -6,9 +6,18 @@
 # #SBATCH --gres=gpu:tesla:1
 # #SBATCH --gres=gpu:ampere:1
 
+set -euo pipefail
+
 . vars_in.sh
 
 BINARY="../src/juliaset_gpu"
+
+if ! command -v nvcc >/dev/null 2>&1; then
+  echo "nvcc not found. Load a CUDA module before submitting this job."
+  exit 127
+fi
+
+make -C ../src -B -f Makefile.gpu
 
 # change these bsizes according to your best values
 BSIZE_X=32
@@ -18,4 +27,3 @@ for SIZE in "${SIZE_LIST[@]}"
 do 
   $BINARY -r $SIZE $SIZE -b $BSIZE_X $BSIZE_Y -n $NREP -o "task4_gpu_${SIZE}.csv"
 done
-

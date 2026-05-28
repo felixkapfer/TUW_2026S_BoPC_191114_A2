@@ -6,9 +6,18 @@
 # #SBATCH --gres=gpu:tesla:1
 # #SBATCH --gres=gpu:ampere:1
 
+set -euo pipefail
+
 . vars_in.sh
 
 BINARY="../src/juliaset_gpu"
+
+if ! command -v nvcc >/dev/null 2>&1; then
+  echo "nvcc not found. Load a CUDA module before submitting this job."
+  exit 127
+fi
+
+make -C ../src -B -f Makefile.gpu
 
 BSIZE_X_LIST=(1 32  1 128 1024)
 BSIZE_Y_LIST=(1  1 32 1   1)
@@ -22,4 +31,3 @@ do
   BSIZE_Y=${BSIZE_Y_LIST[$i]}
   $BINARY -r $SIZE $SIZE -b $BSIZE_X $BSIZE_Y -n $NREP -o "task3_${BSIZE_X}_${BSIZE_Y}.csv"
 done    
-
