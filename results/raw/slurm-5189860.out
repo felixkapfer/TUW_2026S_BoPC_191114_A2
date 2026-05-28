@@ -1,0 +1,7 @@
+make: Entering directory '/home/student/pc26s27/projects/pr-bopc-a2/TUW_2026S_BoPC_191114_A2/julia_cuda/src'
+g++ -fopenmp -c juliaset.cpp
+g++ -fopenmp -c image.cpp
+g++ -fopenmp -c cli_parser.cpp
+g++ -fopenmp -c kernel_cpu.cpp
+g++ -fopenmp -o juliaset_cpu juliaset.o image.o cli_parser.o kernel_cpu.o
+make: Leaving directory '/home/student/pc26s27/projects/pr-bopc-a2/TUW_2026S_BoPC_191114_A2/julia_cuda/src'
