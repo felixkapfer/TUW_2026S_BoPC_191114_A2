@@ -19,6 +19,4 @@ julia_cuda/src/juliaset_gpu
 
 
 # Benchmark and image outputs
-*.csv
-*.ppm
 
