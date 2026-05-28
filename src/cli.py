@@ -63,6 +63,19 @@ def print_env() -> int:
     return 0
 
 
+def require_gpu_build_tools() -> int:
+    """Return a non-zero exit code if the CUDA compiler is missing."""
+    # The GPU Makefile calls nvcc directly.
+    if shutil.which("nvcc") is not None:
+        return 0
+
+    # On Hydra this usually means the CUDA module was not loaded.
+    print("Error: nvcc not found. Load a CUDA module before building GPU code.")
+    print("Try: module avail cuda")
+    print("Then load the matching module and rerun the command.")
+    return 127
+
+
 def main() -> int:
     """Run the selected helper command."""
     # Parse the command line once at the boundary of the program.
@@ -77,6 +90,10 @@ def main() -> int:
 
     # Build commands are direct wrappers around the project Makefiles.
     if parsed_arguments.command == "build-gpu":
+        if not parsed_arguments.dry_run:
+            tool_check_exit_code = require_gpu_build_tools()
+            if tool_check_exit_code != 0:
+                return tool_check_exit_code
         return run_command(build_gpu_command(), cuda_sources_directory,
                            parsed_arguments.dry_run)
     if parsed_arguments.command == "build-cpu":
@@ -87,6 +104,10 @@ def main() -> int:
     if (parsed_arguments.command == "run-gpu"
             and not (cuda_sources_directory / "juliaset_gpu").exists()):
         print("juliaset_gpu not found; building GPU binary first.")
+        if not parsed_arguments.dry_run:
+            tool_check_exit_code = require_gpu_build_tools()
+            if tool_check_exit_code != 0:
+                return tool_check_exit_code
         build_exit_code = run_command(build_gpu_command(),
                                       cuda_sources_directory,
                                       parsed_arguments.dry_run)
