@@ -66,3 +66,17 @@ sbatch gpu_code_t3.job
 sbatch gpu_code_t4.job
 sbatch cpu_code_t4.job
 ```
+
+## Cluster Commands
+
+| Command | Purpose |
+|---|---|
+| `sinfo` | Check which nodes are around |
+| `sinfo -Nel` | Show nodes with more details |
+| `sinfo -p q_student_gpu -Nel` | Check the GPU nodes |
+| `squeue` | See what jobs are queued |
+| `squeue -u $USER` | See only my own jobs |
+| `salloc -p q_student_gpu -t 10 --gres=gpu:tesla:1` | Get an interactive tesla slot |
+| `srun --pty bash -l` | Start a shell there |
+| `nvidia-smi -L` | See which GPU I got |
+| `module avail` | See available modules |
