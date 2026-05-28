@@ -69,10 +69,11 @@ def require_gpu_build_tools() -> int:
     if shutil.which("nvcc") is not None:
         return 0
 
-    # On Hydra this usually means the CUDA module was not loaded.
-    print("Error: nvcc not found. Load a CUDA module before building GPU code.")
-    print("Try: module avail cuda")
-    print("Then load the matching module and rerun the command.")
+    # On Hydra this usually means the command is running on hydra-head,
+    # not inside an interactive allocation on the GPU node.
+    print("Error: nvcc not found. Run GPU commands on the tesla node.")
+    print("Try: salloc -p q_student_gpu -t 10 --gres=gpu:tesla:1")
+    print("Then rerun this command after the prompt changed to tesla.")
     return 127
 
 
