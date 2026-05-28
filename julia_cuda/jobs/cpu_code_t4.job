@@ -7,12 +7,15 @@
 # #SBATCH --gres=gpu:ampere:1
 #SBATCH -c 32
 
+set -euo pipefail
+
 . vars_in.sh
 
 BINARY="../src/juliaset_cpu"
+
+make -C ../src -B
 
 for SIZE in "${SIZE_LIST[@]}"
 do 
   $BINARY -r $SIZE $SIZE -n $NREP -o "task4_cpu_${SIZE}.csv"
 done
-
